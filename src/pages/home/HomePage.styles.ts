@@ -25,7 +25,11 @@ export const GameCardLink = styled.a`
   }
 `;
 
-export const FilterChip = styled.button`
+interface FilterChipProps {
+  $selected: boolean;
+}
+
+export const FilterChip = styled.button<FilterChipProps>`
   display: flex;
   align-items: center;
   gap: 8px;

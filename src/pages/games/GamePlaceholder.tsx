@@ -1,7 +1,11 @@
 import { games } from '../../data/games';
 
 // Shared shell for future minigames. Add each game's actual UI in its own folder.
-export default function GamePlaceholder({ gameSlug }) {
+interface GamePlaceholderProps {
+  gameSlug: string;
+}
+
+export default function GamePlaceholder({ gameSlug }: GamePlaceholderProps) {
   const game = games.find((item) => item.slug === gameSlug);
 
   if (!game) return <main className="placeholder-page"><p>We couldn't find that practice.</p><a href="/">Back to the practice room</a></main>;

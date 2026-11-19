@@ -1,12 +1,19 @@
+import type { SVGProps } from 'react';
 import '../../App.css';
 import { games } from '../../data/games';
+import type { Game, GameCategory, GameIcon } from '../../data/games';
 import * as S from './HomePage.styles';
 import Sidebar from '../../components/Sidebar';
 
-const categories = ['All games', 'Past tenses', 'Verb forms', 'Grammar'];
+const categories: Array<'All games' | GameCategory> = ['All games', 'Past tenses', 'Verb forms', 'Grammar'];
 
-function Icon({ name, size = 20 }) {
-  const common = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true };
+interface IconProps {
+  name: GameIcon | 'arrow';
+  size?: number;
+}
+
+function Icon({ name, size = 20 }: IconProps) {
+  const common: SVGProps<SVGSVGElement> = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true };
   const paths = {
     arrow: <><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></>,
     clock: <><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></>,
@@ -18,12 +25,20 @@ function Icon({ name, size = 20 }) {
   return <svg {...common}>{paths[name]}</svg>;
 }
 
-function GameCard({ game, index }) {
+interface GameCardProps {
+  game: Game;
+  index: number;
+}
+
+function GameCard({ game, index }: GameCardProps) {
+  const age = Date.now() - Date.parse(game.createdAt);
+  const isNew = age >= 0 && age < 7 * 24 * 60 * 60 * 1000;
+
   return (
-    <S.GameCardLink className={`game-card ${game.tone}`} href={`/games/${game.slug}`} aria-label={`Open ${game.title}`}>
+    <S.GameCardLink className={`game-card ${game.tone}`} href={`/games/${game.slug}`} aria-label={`Open ${game.title}${isNew ? ", New" : ""}`}>
       <div className="card-topline">
         <span className="game-icon"><Icon name={game.icon} size={22} /></span>
-        <span className="card-number">0{index + 1}</span>
+        <span className="card-meta">{isNew && <span className="new-badge">New</span>}<span className="card-number">0{index + 1}</span></span>
       </div>
       <div className="game-copy">
         <span className="game-category">{game.category}</span>
